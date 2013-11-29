@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FHB FBI News</title>
+	<meta http-equiv="refresh" content="300">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	
+	<link href="lib/styles.css" type="text/css" rel="stylesheet" />
+	
+	<link href="lib/photoswipe.css" type="text/css" rel="stylesheet" />
+	
+	<script type="text/javascript" src="lib/klass.min.js"></script>
+	<script type="text/javascript" src="lib/code.photoswipe-3.0.5.min.js"></script>
+	
+	
+	<script type="text/javascript">
+
+		(function(window, PhotoSwipe){
+		
+			document.addEventListener('DOMContentLoaded', function(){
+			
+				var
+					options = {
+						autoStartSlideshow: true,
+						slideshowDelay: 5000,
+						slideSpeed: 1000,
+						preventHide: true,
+						getImageSource: function(obj){
+							return obj.url;
+						},
+						getImageCaption: function(obj){
+							return obj.caption;
+						}
+					},
+					instance = PhotoSwipe.attach( 
+						[
+IMAGE_LIST 
+						], 
+						options 
+					);
+					
+					instance.show(0);
+					
+			}, false);
+			
+			
+		}(window, window.Code.PhotoSwipe));
+		
+	</script>
+	
+</head>
+<body>
+
+
+</body>
+</html>
