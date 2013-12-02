@@ -1,5 +1,5 @@
 __author__ = 'LPC'
-import comtypes.client as com
+import win32com.client as com
 import pythoncom
 import os
 
@@ -12,7 +12,7 @@ class PowerPoint:
     def create(self):
 
         pythoncom.CoInitialize()
-        application = com.CreateObject("PowerPoint.Application")
+        application = com.Dispatch("PowerPoint.Application")
         return application, application.Presentations.Open(os.path.abspath(self.filename))
 
     def get_images_from_ppt(self, exportdir):
