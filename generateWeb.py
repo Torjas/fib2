@@ -31,13 +31,13 @@ class MyHandler(FileSystemEventHandler):
             print(filename + " changed. Working...")
             time.sleep(4)
             gen = Generator(filename, templateFile, exportDir, outFileName, remotePicturePath)
-            print("Picture upload")
+            print("Pictureupload...")
             gen.picture_generator(host, user, key)
             print ("Pictures uploaded")
             gen.site_generator(host, user, key)
             print('Other files updated')
             gen.close_presentation()
-
+            print("Listening for " + filename)
 
 if __name__ == "__main__":
 

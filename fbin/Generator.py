@@ -34,13 +34,14 @@ def sort_nicely(l):
 
 
 class Generator:
-    def __init__(self, filename, template, exportdir, outfilename, remotePicturePath):
+    def __init__(self, filename, template, exportdir, outfilename, remotePicturePath, pictureseverywhere=True):
         self.remotepicturepath = remotePicturePath
         self.file = filename
         self.templatefile = template
         self.exportdir = exportdir
         self.outfilename = outfilename
         self.powerpoint = PowerPoint(self.file)
+        self.pictureseverywhere = pictureseverywhere
 
         self.templatesite = "news/template_site.html"
         self.templateitem = "news/template_item.html"
@@ -71,12 +72,14 @@ class Generator:
         fileupload.multi_upload(filelist, self.remotepicturepath)
         fileupload.close()
 
-
-
     def dict_generator(self):
 
         tmppath = "tmp"
-        slidelist = self.powerpoint.slides_with_images()
+        if self.pictureseverywhere:
+            slidelist = range(len(self.powerpoint.slides())+1)
+        else:
+            slidelist = self.powerpoint.slides_with_images()
+
         try:
             shutil.rmtree(self.exportdir)
         except WindowsError:
@@ -84,13 +87,10 @@ class Generator:
         self.powerpoint.get_images_from_ppt(tmppath)
         filelist = []
         for f in os.listdir(tmppath):
-            print 'FILE: ' + f
             filelist.append(f)
         sort_nicely(filelist)
 
-
         presentationcontent = {s: {'file': 'pics/' + filelist[s-1]} for s in slidelist}
-        # TODO: make generator
 
         slides = {}
         for slide in self.powerpoint.slides():
@@ -112,9 +112,9 @@ class Generator:
             for key, slide in content.items():
                 for key, shape in slide.items():
                     shape = self.replacenewline(shape, '\n')
-                    #shape = shape.encode('latin-1', 'replace')
-            from pprint import pprint
-            pprint(content)
+                    shape = shape.encode('latin-1', 'replace')
+            #from pprint import pprint
+            #pprint(content)
             return content
         return None
 
@@ -129,7 +129,7 @@ class Generator:
 
                     image = '''<div class="image">
                                 <a href="{0}">
-                                <img src="{0}" alt="Slide {1}" >
+                                <img class="slideimage" src="{0}" alt="Slide {1}" >
                                 </a>
                             </div>'''.format(content[slide].get('file', ""), slide)
                     del content[slide]['file']
@@ -155,12 +155,14 @@ class Generator:
     def site_generator(self, host, user, key):
         content = self.dict_generator()
 
+        with open('data.json', 'w') as f:
+            json.dump(self.to_json(content), f)
+
         with open('index.html', 'w') as f:
             f.write(self.to_html(content))
 
-        with open('data.json', 'w') as f:
-            json.dump(self.to_json(content), f)
-        print 'Writte; LoadUp:'
+
+
         fileupload = FileUpload(host, user, key)
         fileupload.upload('index.html', "www")
         fileupload.upload('data.json', "www")
