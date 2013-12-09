@@ -28,8 +28,9 @@ class MyHandler(FileSystemEventHandler):
     def on_modified(self, event):
         #print (event)
         if '\\' + self.filename in event.src_path:
-            print(filename + " changed. Working...")
+            print(filename + " changed. Waiting...")
             time.sleep(4)
+            print("Working...")
             gen = Generator(filename, templateFile, exportDir, outFileName, remotePicturePath)
             print("Pictureupload...")
             gen.picture_generator(host, user, key)

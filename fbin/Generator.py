@@ -74,19 +74,26 @@ class Generator:
 
     def dict_generator(self):
 
-        tmppath = "tmp"
-        if self.pictureseverywhere:
-            slidelist = range(len(self.powerpoint.slides())+1)
-        else:
-            slidelist = self.powerpoint.slides_with_images()
+        try:
+            if self.pictureseverywhere:
+                slidelist = range(len(self.powerpoint.slides())+1)
+            else:
+                slidelist = self.powerpoint.slides_with_images()
+        except Exception:
+            self.powerpoint = PowerPoint(self.file)
+            if self.pictureseverywhere:
+                slidelist = range(len(self.powerpoint.slides())+1)
+            else:
+                slidelist = self.powerpoint.slides_with_images()
+
 
         try:
             shutil.rmtree(self.exportdir)
         except WindowsError:
             pass  # TODO: Abfangen
-        self.powerpoint.get_images_from_ppt(tmppath)
+        self.powerpoint.get_images_from_ppt(self.exportdir)
         filelist = []
-        for f in os.listdir(tmppath):
+        for f in os.listdir(self.exportdir):
             filelist.append(f)
         sort_nicely(filelist)
 
