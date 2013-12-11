@@ -5,7 +5,7 @@ __author__ = 'LPC'
 from PowerPoint import PowerPoint
 from FileUpload import FileUpload
 
-from datetime import date
+from datetime import date, time
 import os
 import shutil
 import re
@@ -168,10 +168,13 @@ class Generator:
         with open('index.html', 'w') as f:
             f.write(self.to_html(content))
 
+        with open('time', 'w') as f:
+            f.write((time.time()).split(".")[0])
 
 
         fileupload = FileUpload(host, user, key)
         fileupload.upload('index.html', "www")
+        fileupload.upload('time', "www")
         fileupload.upload('data.json', "www")
         fileupload.close()
 
